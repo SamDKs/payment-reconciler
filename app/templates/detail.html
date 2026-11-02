@@ -1,0 +1,44 @@
+{# Payment details, invoice comparison and audit history. #}
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{{ url_for('web.dashboard') }}">← Back to operations</a>
+<p class="eyebrow">PAYMENT DETAILS</p>
+<h1>{{ payment.event_id }}</h1>
+<p>Reference {{ payment.invoice_reference }} · Provider {{ payment.provider }}</p>
+<div class="cards">
+<article>
+<span>Received amount</span>
+<strong class="amount">{{ payment.currency }} {{ payment.amount_minor|money }}</strong>
+</article>
+<article>
+<span>Current expected amount</span>
+<strong class="amount">
+{% if payment.invoice %}
+{{ payment.invoice.currency }} {{ payment.invoice.amount_minor|money }}
+{% else %}
+Unmatched
+{% endif %}
+</strong>
+</article>
+</div>
+<section>
+<h2>{{ result_labels.get(payment.result, payment.result) }}</h2>
+<p>{{ payment.reason }}</p>
+</section>
+<section>
+<h2>Audit history</h2>
+<ol class="history">
+{% for item in payment.history %}
+<li>
+<strong>{{ action_labels.get(item.action, item.action) }}</strong>
+<p>{{ item.detail }}</p>
+<time>{{ item.created_at }}</time>
+</li>
+{% endfor %}
+</ol>
+<p class="hint">Timestamps are in UTC. The outcome preserves the original processing decision.</p>
+</section>
+
+{% endblock %}

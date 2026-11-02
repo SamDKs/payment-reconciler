@@ -1,0 +1,105 @@
+{# Invoice summary, outcome filter and payment and invoice tables. #}
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="heading">
+<div>
+<p class="eyebrow">PAYMENT OPERATIONS</p>
+<h1>Every payment, explained.</h1>
+<p>Review matches and focus on discrepancies.</p>
+</div>
+<a class="button" href="{{ url_for('web.dashboard', result=selected) if selected else url_for('web.dashboard') }}">Refresh</a>
+</div>
+<div class="cards">
+<article>
+<span>Pending invoices</span>
+<strong>{{ summary.invoices.get('pending', 0) }}</strong>
+</article>
+<article>
+<span>Paid invoices</span>
+<strong>{{ summary.invoices.get('paid', 0) }}</strong>
+</article>
+</div>
+<section>
+<h2>Received payments</h2>
+<form method="get">
+<label for="result">Outcome</label>
+<select id="result" name="result">
+<option value="">All</option>
+{% for value, label in [('matched','Matched'),('discrepancy','Discrepancy'),('unmatched','Unmatched'),('requires_review','Requires review')] %}
+<option value="{{ value }}"
+{% if selected == value %}
+selected
+{% endif %}
+>{{ label }}</option>
+{% endfor %}
+</select>
+<button>Filter</button>
+</form>
+<div class="table">
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Reference</th>
+<th>Received</th>
+<th>Outcome</th>
+<th>Reason</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+{% for payment in payments %}
+<tr>
+<td>{{ payment.event_id }}</td>
+<td>{{ payment.invoice_reference }}</td>
+<td>{{ payment.currency }} {{ payment.amount_minor|money }}</td>
+<td>
+<span class="badge {{ payment.result or '' }}">{{ result_labels.get(payment.result, payment.result) }}</span>
+</td>
+<td class="reason">{{ payment.reason }}</td>
+<td>
+<a href="{{ url_for('web.detail', payment_id=payment.id) }}">View details →</a>
+</td>
+</tr>
+{% else %}
+<tr>
+<td colspan="6">No payments to display. Load sample data with seed-demo.</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+<p class="hint">Showing up to 100 recent records.</p>
+</section>
+<section>
+<h2>Invoices</h2>
+<div class="table">
+<table>
+<thead>
+<tr>
+<th>Reference</th>
+<th>Expected</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+{% for invoice in invoices %}
+<tr>
+<td>{{ invoice.reference }}</td>
+<td>{{ invoice.currency }} {{ invoice.amount_minor|money }}</td>
+<td>{{ 'Paid' if invoice.status == 'paid' else 'Pending' }}</td>
+</tr>
+{% else %}
+<tr>
+<td colspan="3">No invoices yet.</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</section>
+
+{% endblock %}

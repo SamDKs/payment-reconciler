@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "payment-reconciler"
+version = "0.1.0"
+description = "Synchronous payment reconciliation with duplicate protection and audit history"
+requires-python = ">=3.11"
+dependencies = ["Flask>=3.1,<4"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[tool.setuptools.packages.find]
+include = ["app*", "migrations*"]
+
+[tool.setuptools.package-data]
+app = ["templates/*.html", "static/*.css"]
+migrations = ["*.sql"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

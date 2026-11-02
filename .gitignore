@@ -1,0 +1,23 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+instance/
+*.sqlite3*
+.env
+.DS_Store
+
+# Build artifacts and local databases, including custom database paths.
+build/
+dist/
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+.coverage
+htmlcov/
+.env.*
+!.env.example
+
+# Keep the original challenge brief locally; submit only the implementation.
+Software Engineer*.pdf
